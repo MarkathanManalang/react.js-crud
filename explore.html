@@ -500,9 +500,11 @@
                     const arr = await this.getNotesForUser(this.user.id);
                     arr.unshift(newNote);
                     await this.saveNotesForUser(this.user.id, arr);
+                    
+                    // Clear form and close modal
                     this.title = '';
                     this.body = '';
-                    this.modalVisible = false;
+                    this.modalVisible = false; // This line closes the modal
                     this.notes = arr;
                     this.render();
                 } catch (e) {
@@ -525,10 +527,12 @@
                     }
                     arr[idx] = { ...arr[idx], title: this.title.trim(), body: this.body };
                     await this.saveNotesForUser(this.user.id, arr);
+                    
+                    // Clear form and close modal
                     this.editingId = null;
                     this.title = '';
                     this.body = '';
-                    this.modalVisible = false;
+                    this.modalVisible = false; // This line closes the modal
                     this.notes = arr;
                     this.render();
                 } catch (e) {
@@ -657,7 +661,10 @@
             }
 
             renderModal() {
-                if (!this.modalVisible) return '';
+                if (!this.modalVisible) {
+                    document.getElementById('noteModal').style.display = 'none';
+                    return '';
+                }
 
                 document.getElementById('modalTitle').textContent = this.editingId ? 'Edit Note' : 'New Note';
                 document.getElementById('noteTitle').value = this.title;
@@ -715,6 +722,13 @@
         // Close modal when clicking outside
         document.getElementById('noteModal').addEventListener('click', (e) => {
             if (e.target === document.getElementById('noteModal')) {
+                app.closeModal();
+            }
+        });
+
+        // Close modal when pressing Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && app.modalVisible) {
                 app.closeModal();
             }
         });
